@@ -50,17 +50,23 @@ class LLM():
     api_key=''
     provider=''
     model=''
+    prompt
     conversation =[{
         'role':'system',
-        'content':'使用者輸入：{input_text}將以上使用者輸入的文字或問題轉換成多組關鍵字用以檔案搜尋，關鍵字越多越好，可以使用任何符號、任何語言，輸出依照以下格式(以半形空白分隔): apple 114514 城堡(這是範例，不是你應該輸出的內容)。並且不要輸出任何額外內容，請只輸出一行關鍵字。請先一步一步慢慢思考，回想與使用者輸入的文字、問題相關的任何內容，並且嘗試揣測使用者的意圖，最後一行按照以上格式輸出你最有把握的關鍵字組合。'
+        'content': prompt
     }]
-    def __init__(self, api_base,provider, model,api_key):
+    def __init__(self, api_base,provider, model,api_key,prompt):
         self.api_base = api_base
         self.model = model
         self.provider = provider
         self.api_key = api_key
+        self.prompt = prompt
+        self.conversation =[{
+            'role':'system',
+            'content': self.prompt
+        }]
 
-    def send_to_llm(self,text,file_path=''):
+    def send_to_llm(self,text='',file_path=''):
         if self.provider == '' or self.model == '':
             return '資料有遺漏，填寫完整再使用'
 
@@ -68,6 +74,13 @@ class LLM():
             self.conversation.append({
                 'role': 'user',
                 'content': text
+            })
+        elif text == '':
+            self.conversation.append({
+                'role' : 'user',
+                'content' : [
+                    {'type' : 'image_url', 'image_url' : f"data:image/png;base64,{image_to_base64(file_path)}"},
+                ]
             })
         else:
             self.conversation.append({

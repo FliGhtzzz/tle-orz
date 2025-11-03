@@ -116,10 +116,11 @@ def test_search(es,index_name,query_text,size=10):
 if __name__ == '__main__':
 
     api_base, provider, model, api_key = userSend.get_llm_imformation()
-    LLM = userSend.LLM(api_base, provider, model, api_key)
+    prompt = '使用者輸入：{input_text}將以上使用者輸入的文字或問題轉換成多組關鍵字用以檔案搜尋，關鍵字越多越好，可以使用任何符號、任何語言，輸出依照以下格式(以半形空白分隔): apple 114514 城堡(這是範例，不是你應該輸出的內容)。並且不要輸出任何額外內容，請只輸出一行關鍵字。請先一步一步慢慢思考，回想與使用者輸入的文字、問題相關的任何內容，並且嘗試揣測使用者的意圖，最後一行按照以上格式輸出你最有把握的關鍵字組合。'
+    LLM = userSend.LLM(api_base, provider, model, api_key, prompt)
 
     es = connect()
 
     input_info = userSend.user_input()
-    reply = LLM.send_to_llm(*input_info)
+    reply = LLM.send_to_llm(text=input_info[0],file_path=input_info[1])
     test_search(es,_index_name,reply)
