@@ -120,10 +120,6 @@ if __name__ == '__main__':
 
     es = connect()
 
-    # build_index(es,_index_name) 
-    # print(f'去 {_folder} 找')
-    # index_folder(es,_folder,_index_name)
-
     input_info = userSend.user_input()
     reply = LLM.send_to_llm(*input_info)
     test_search(es,_index_name,reply)

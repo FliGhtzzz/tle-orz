@@ -308,33 +308,34 @@ def ask(image_path, max_tokens=256, use_sampling=False):
 
 
 # ==================== 互動模式 ====================
-print("\n" + "="*70)
-print("💬 互動模式（請輸入欲處理圖片的完整路徑，輸入 q 結束）")
-print("="*70)
-
-while True:
-    try:
-        user_input = input("\n請輸入圖片路徑（或 q 離開）: ").strip()
-        if user_input.lower() in ['q', 'quit', 'exit', '退出']:
-            print("👋 已結束。")
+if __name__ == '__main__':
+    print("\n" + "="*70)
+    print("💬 互動模式（請輸入欲處理圖片的完整路徑，輸入 q 結束）")
+    print("="*70)
+    
+    while True:
+        try:
+            user_input = input("\n請輸入圖片路徑（或 q 離開）: ").strip()
+            if user_input.lower() in ['q', 'quit', 'exit', '退出']:
+                print("👋 已結束。")
+                break
+            if not user_input:
+                continue
+    
+            answer = ask(user_input)
+            print(f"\nAI 關鍵字：{answer}\n")
+    
+        except KeyboardInterrupt:
+            print("\n👋 已中斷。")
             break
-        if not user_input:
-            continue
-
-        answer = ask(user_input)
-        print(f"\nAI 關鍵字：{answer}\n")
-
-    except KeyboardInterrupt:
-        print("\n👋 已中斷。")
-        break
-    except Exception as e:
-        print(f"錯誤: {e}")
-
-# ==================== 完成 ====================
-print("\n" + "="*70)
-print("✓ 完成")
-print("="*70)
-
-if CUDA_AVAILABLE:
-    mem_peak = torch.cuda.max_memory_allocated() / (1024**3)
-    print(f"VRAM 峰值: {mem_peak:.2f} GB")
+        except Exception as e:
+            print(f"錯誤: {e}")
+    
+    # ==================== 完成 ====================
+    print("\n" + "="*70)
+    print("✓ 完成")
+    print("="*70)
+    
+    if CUDA_AVAILABLE:
+        mem_peak = torch.cuda.max_memory_allocated() / (1024**3)
+        print(f"VRAM 峰值: {mem_peak:.2f} GB")
