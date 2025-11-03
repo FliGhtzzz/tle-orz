@@ -3,6 +3,12 @@ import base64
 from litellm import completion
 import userInputToLLM as llm 
 
+def getLLM():
+    api_base, provider, model, api_key = userSend.get_llm_imformation()
+    prompt = ''
+    LLM = llm.LLM(api_base, provider, model, api_key,prompt)
+    return LLM
+
 def fileToText(file_path,LLM):
     ext = os.path.splitext(path)[1]
     content = ''
