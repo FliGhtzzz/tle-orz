@@ -7,20 +7,12 @@ from tika import parser
 import userInputToLLM as userSend
 
 _host =  "http://localhost:9200"
-_index_name = "test"
-_folder = r'C:/Users/kzzz/Desktop/test_ES'
+
+
+'''  意義不明
 BULK_SIZE = 100
-
-def connect():
-    try :
-        es = Elasticsearch(_host)
-    except :
-        print('你肯定有啥沒弄好')
-    if not es.ping():
-        print("你ES沒開阿")
-    return es
-
-''' 意義不明
+_folder = r'C:/Users/kzzz/Desktop/test_ES'
+_index_name = "test"
 def build_index(es,index_name):
     mapping = {
         "properties": {
@@ -37,28 +29,9 @@ def build_index(es,index_name):
         print(f"有 index: {index_name} 了")
     else:
         print(f"已經有 {index_name} 了啦")
-'''
-
 
 def file_id_from_path(p: str):
     return hashlib.sha1(p.encode("utf-8")).hexdigest()
-
-def file_to_text(path:str,LLM):
-    ext = Path(path).suffix.lower()
-    if ext in {'.txt','.md','.py','.csv', '.json', '.log', '.html'}:
-        try:
-            with open(path,'r',encoding='utf-8',errors='ignore') as f:
-                return f.read()
-        except Exception:
-            return ""
-    try:
-        parsed = parser.from_file(path)
-        content = parsed.get('content')
-        if content:
-            return content
-    except Exception as e:
-        print(f'tika燒雞了喔 {path} {e}')
-    return ""
 
 def doc_for_file(path:str):
     stat = os.stat(path)
@@ -95,6 +68,34 @@ def index_folder(es,folder,index_name):
         bulk(es,actions)
         print(f'總共有 {count} 筆')
 
+def file_to_text(path:str,LLM):
+    ext = Path(path).suffix.lower()
+    if ext in {'.txt','.md','.py','.csv', '.json', '.log', '.html'}:
+        try:
+            with open(path,'r',encoding='utf-8',errors='ignore') as f:
+                return f.read()
+        except Exception:
+            return ""
+    try:
+        parsed = parser.from_file(path)
+        content = parsed.get('content')
+        if content:
+            return content
+    except Exception as e:
+        print(f'tika燒雞了喔 {path} {e}')
+    return ""
+'''
+
+def connect():
+    try :
+        es = Elasticsearch(_host)
+    except :
+        print('你肯定有啥沒弄好')
+    if not es.ping():
+        print("你ES沒開阿")
+    return es
+
+
 def test_search(es,index_name,query_text,size=10):
     body = {
         "query": {
@@ -118,9 +119,10 @@ if __name__ == '__main__':
     LLM = userSend.LLM(api_base, provider, model, api_key)
 
     es = connect()
-    # build_index(es,_index_name)
-    print(f'去 {_folder} 找')
-    index_folder(es,_folder,_index_name)
+
+    # build_index(es,_index_name) 
+    # print(f'去 {_folder} 找')
+    # index_folder(es,_folder,_index_name)
 
     input_info = userSend.user_input()
     reply = LLM.send_to_llm(*input_info)
