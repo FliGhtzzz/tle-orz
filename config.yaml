@@ -1,0 +1,17 @@
+es:
+  url: "http://localhost:9200"
+index:
+  name: "testing_local_files"
+  max_content_size_bytes: 200000   # 超過這個大小就不把 content 加入索引（範例：200 KB）
+files:
+  folders:
+#    - "C:/我是D槽/python"   # 可以列多個
+    - "C:/Users/user/Documents/corpus"
+  exts:
+    - ".py"
+    - ".txt"
+highlight:
+  pre_tag: "\033[1m"
+  post_tag: "\033[0m"
+search:
+  top_n_per_keyword: 5
