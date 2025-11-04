@@ -18,21 +18,31 @@ def cmd_watch(args):
     start_watching(folders, es=es)
 
 def cmd_query(args):
-    es = get_es_search_client()
-    results = search_query(es, args.query, top_n_per_keyword=args.top or None)
-    # pretty print
-    for kw, hits in results.items():
-        print(f"\n=== keyword: {kw} ===")
-        if not hits:
-            print("no hits")
-            continue
-        for h in hits:
-            print(f"file: {h['filename']}")
-            print(f"path: {h['path_link']}")
-            print(f"score: {h['score']}")
-            if h['highlight']:
-                print(f"highlight: {h['highlight']}")
-            print("-" * 30)
+    es = get_es_client()  # 取得 ES client
+    results = search_query(
+        es,
+        query_text=args.query,
+        top_n=args.top or None,
+        scope="both"  # 可改成 "filename" 或 "content"
+    )
+
+    print(f"\nQuery: {results['query_text']}")
+    print(f"All generated keywords: {', '.join(results['keywords_all'])}")
+    print(f"Keywords used (filtered): {', '.join(results['keywords_used'])}")
+    print(f"Total hits: {results.get('total', {}).get('value', 'unknown')}")
+    print("=" * 50)
+
+    if not results['hits']:
+        print("No results found.")
+        return
+
+    for h in results['hits']:
+        print(f"file: {h['filename']}")
+        print(f"path: {h['path_link']}")
+        print(f"score: {h['score']:.3f}")
+        if h['highlight']:
+            print(f"highlight: {h['highlight']}")
+        print("-" * 50)
 
 def main():
     parser = argparse.ArgumentParser(prog="file_search")

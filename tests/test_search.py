@@ -16,7 +16,7 @@ def test_search_query_mocks():
             ]
         }
     }
-    results = search_query(es, "hello world", top_n_per_keyword=1)
+    results = search_query(es, "hello world", top_n=1)
     assert "hello world" in results
     hits = results["hello world"]
     assert hits[0]["filename"] == "a.py"

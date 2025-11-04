@@ -6,7 +6,7 @@ DEFAULT_CONFIG = {
     "index": {"name": "testing_local_files", "max_content_size_bytes": 200000},
     "files": {"folders": [], "exts": [".py"]},
     "highlight": {"pre_tag": "\033[1m", "post_tag": "\033[0m"},
-    "search": {"top_n_per_keyword": 5}
+    "search": {"top_n": 5}
 }
 
 def load_config(path: str = "config.yaml"):

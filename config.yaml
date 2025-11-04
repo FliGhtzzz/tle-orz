@@ -14,4 +14,4 @@ highlight:
   pre_tag: "\033[1m"
   post_tag: "\033[0m"
 search:
-  top_n_per_keyword: 5
+  top_n: 5
